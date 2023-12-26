@@ -9,7 +9,7 @@ import {
 } from "wagmi";
 import { ethers } from "ethers";
 import { erc20ABI } from "wagmi";
-import * as Dialog from "@radix-ui/react-dialog";
+import PopUp from "@/components/dialog";
 
 const linkAddress = "0x779877A7B0D9E8603169DdbD7836e478b4624789";
 const wethAddress = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14";
@@ -79,21 +79,34 @@ export default function Home() {
     },
   });
 
-  // Проверка разрешения для LINK, если кошелек подключен
   useEffect(() => {
-    if (isConnected && !linkApproved && !linkAllowance) {
-      // Проверка allowance для LINK
-      // Если allowance недостаточно, вызываем:
+    if (isConnected) {
+      console.log("Refetching allowances");
+      // Повторное получение данных о разрешениях для LINK и WETH
+      refetchLinkAllowance();
+      refetchWethAllowance();
+    }
+  }, [isConnected, refetchLinkAllowance, refetchWethAllowance]);
+
+  useEffect(() => {
+    if (
+      isConnected &&
+      !linkApproved &&
+      (linkAllowance === BigInt(0) || linkAllowance === undefined)
+    ) {
       linkContractWrite.write?.();
     }
-  }, [isConnected, linkAllowance]);
+  }, [isConnected, linkApproved, linkAllowance]);
 
-  // Проверка разрешения для WETH
   useEffect(() => {
-    if (isConnected && !wethApproved && !wethAllowance) {
+    if (
+      isConnected &&
+      !wethApproved &&
+      (wethAllowance === BigInt(0) || wethAllowance === undefined)
+    ) {
       wethContractWrite.write?.();
     }
-  }, [isConnected, wethAllowance]);
+  }, [isConnected, wethApproved, wethAllowance]);
 
   useEffect(() => {
     if (linkApproved && wethApproved && isConnected) {
@@ -118,26 +131,10 @@ export default function Home() {
           suppressHydrationWarning
           className="text-white text-4xl md:text-6xl lg:text-8xl text-center"
         >
-          Liquidity Lark Project
+          Liquidity Lark
         </div>
       )}
-      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <Dialog.Trigger />
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-30" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-md shadow-lg">
-            <Dialog.Title className="text-black text-[28px] pt-[40px]">
-              Транзакции прошли успешно!
-            </Dialog.Title>
-            <Dialog.Description className="text-black text-[18px] pt-[20px]">
-              Вы дали разрешение контракту на использование LINK и WETH!
-            </Dialog.Description>
-            <Dialog.Close className="text-black absolute top-2 right-2">
-              Close
-            </Dialog.Close>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <PopUp open={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />
     </div>
   );
 }
