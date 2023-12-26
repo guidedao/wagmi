@@ -8,6 +8,7 @@ const nextConfig = {
         fallback: {
           net: false,
           dns: false,
+          fs: false,
           tls: false,
           assert: false,
           process: false,
