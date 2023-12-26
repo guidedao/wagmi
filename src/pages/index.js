@@ -11,9 +11,9 @@ import { ethers } from "ethers";
 import { erc20ABI } from "wagmi";
 import Tabs from "@/components/tabs";
 
-const linkAddress = "0x779877A7B0D9E8603169DdbD7836e478b4624789";
-const wethAddress = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14";
-const spenderAddress = "0xA21A0eA75b8112850D146CCa56A4379a7aFe02D9";
+const linkAddress = process.env.NEXT_PUBLIC_LINK_ADDRESS;
+const wethAddress = process.env.NEXT_PUBLIC_WETH_ADDRESS;
+const spenderAddress = process.env.NEXT_PUBLIC_SPENDER_ADDRESS;
 const MAX_ALLOWANCE = ethers.MaxUint256;
 
 export default function Home() {
