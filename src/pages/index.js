@@ -9,7 +9,7 @@ import {
 } from "wagmi";
 import { ethers } from "ethers";
 import { erc20ABI } from "wagmi";
-import PopUp from "@/components/dialog";
+import Tabs from "@/components/tabs";
 
 const linkAddress = "0x779877A7B0D9E8603169DdbD7836e478b4624789";
 const wethAddress = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14";
@@ -20,8 +20,6 @@ export default function Home() {
   const { isConnected, address } = useAccount();
   const [linkApproved, setLinkApproved] = useState(false);
   const [wethApproved, setWethApproved] = useState(false);
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Read Allowance for LINK
   const { data: linkAllowance, refetch: refetchLinkAllowance } =
@@ -81,7 +79,6 @@ export default function Home() {
 
   useEffect(() => {
     if (isConnected) {
-      console.log("Refetching allowances");
       // Повторное получение данных о разрешениях для LINK и WETH
       refetchLinkAllowance();
       refetchWethAllowance();
@@ -108,23 +105,14 @@ export default function Home() {
     }
   }, [isConnected, wethApproved, wethAllowance]);
 
-  useEffect(() => {
-    if (linkApproved && wethApproved && isConnected) {
-      setIsDialogOpen(true);
-    }
-  }, [linkApproved, wethApproved, isConnected]);
-
   return (
     <div className="bg-gradient-to-r from-blue-300 to-green-300 h-screen flex flex-col justify-center items-center relative">
       <div className="absolute top-0 right-0 p-4">
         <ConnectKitButton />
       </div>
       {isConnected ? (
-        <div
-          suppressHydrationWarning
-          className="text-white text-4xl md:text-6xl lg:text-8xl text-center"
-        >
-          Форма
+        <div suppressHydrationWarning>
+          <Tabs />
         </div>
       ) : (
         <div
@@ -134,7 +122,6 @@ export default function Home() {
           Liquidity Lark
         </div>
       )}
-      <PopUp open={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />
     </div>
   );
 }

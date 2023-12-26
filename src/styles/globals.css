@@ -25,3 +25,7 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.tradingview-widget-container {
+  height: 300px !important;
+}
